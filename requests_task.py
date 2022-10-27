@@ -3,6 +3,13 @@
 Extract from NFL scoreboard and events endpoints.
 Transform data into the required formats.
 Load data into a json file.
+
+Assumptions, Limitations, and Notes:
+ - minimal error-checking required for the API response. In a prod environment, I would have:
+   - timeouts and retries on API calls
+   - more verbose error handling
+   - maybe even APIResponseSerializers
+ - response data is not too massive, hence chunking is unrequired.
 """
 
 import json
@@ -19,24 +26,28 @@ EXPORT_FILE = "result.json"
 
 def get_event_data(start_date: datetime, end_date: datetime):
     """Call events endpoint and return data."""
+
     url = f"{BASEURL}scoreboard/NFL/{str(start_date)}/{str(end_date)}.json"
 
     try:
         response = requests.get(url, params=PARAMS)
         return response.status_code, response.json()
-    except:
+    except Exception as e:
+        logging.debug(e)
         return response.status_code, {}
 
 
 def get_rankings():
     """Call scoreboard endpoint and return data."""
+
     url = f"{BASEURL}team_rankings/NFL.json"
 
     try:
         response = requests.get(url, params=PARAMS)
         response.raise_for_status()
         return response.status_code, response.json()
-    except:
+    except Exception as e:
+        logging.debug(e)
         return response.status_code, {}
 
 
@@ -79,6 +90,7 @@ def transform_data(rankings, event):
 
 def main():
     """Main function used for convenience."""
+
     status, resp = get_rankings()
 
     if status != 200:
