@@ -1,6 +1,10 @@
 # resulta_mini_etl
 Mini-ETL pipeline for interview task.
 
+## To run:
+
+`$ python3 requests_task.py`
+
 ## Summary
 
 Extract from NFL scoreboard and events endpoints.
